@@ -13,6 +13,21 @@ const encode = (json) => {
   return Base64.encode(JSON.stringify(json)) // ERROR: Failed to execute 'btoa' on 'Window': The string to be encoded contains characters outside of the Latin1 range.
 }
 
+const getAccountConfig = (storeCode = null) => {
+  let cfg = config.extensions.klaviyo.accounts;
+
+  if (storeCode) {
+    return cfg[storeCode];
+  }
+
+  // return first result
+  return cfg[Object.keys(cfg)[0]];
+};
+
+const getList = (cfg, listKey = 'default') => {
+  return cfg.lists[listKey] || cfg.lists.default;
+};
+
 // it's a good practice for all actions to return Promises with effect of their execution
 export const actions: ActionTree<KlaviyoState, any> = {
   maybeIdentify ({ state, dispatch }, { user = null, personalDetails = null, useCache = true }): Promise<Response | object> {
@@ -38,7 +53,7 @@ export const actions: ActionTree<KlaviyoState, any> = {
       token: config.klaviyo.public_key,
       properties: Object.assign(customer, additionalData)
     }
-    let url = processURLAddress(config.klaviyo.endpoint.api) + '/identify?data=' + encode(request)
+    let url = processURLAddress(config.klaviyo.endpoints.api) + '/identify?data=' + encode(request)
 
     return new Promise((resolve, reject) => {
       fetch(url, {
@@ -85,6 +100,8 @@ export const actions: ActionTree<KlaviyoState, any> = {
   },
 
   track ({ state }, { event, data, time = Math.floor(Date.now() / 1000) }): Promise<Response> {
+    let cfg = getAccountConfig(config.defaultStoreCode);
+
     if (state.customer === null || !onlineHelper.isOnline) {
       return new Promise((resolve, reject) => {
         if (state.customer === null) {
@@ -104,13 +121,13 @@ export const actions: ActionTree<KlaviyoState, any> = {
     }
 
     let request = {
-      token: config.klaviyo.public_key,
+      token: cfg.public_key,
       event: event,
       customer_properties: state.customer,
       properties: data,
       time
     }
-    let url = processURLAddress(config.klaviyo.endpoint.api) + '/track?data=' + encode(request)
+    let url = processURLAddress(config.klaviyo.endpoints.api) + '/track?data=' + encode(request)
 
     return new Promise((resolve, reject) => {
       fetch(url, {
@@ -126,7 +143,7 @@ export const actions: ActionTree<KlaviyoState, any> = {
 
   status ({ commit, state }, email): Promise<Boolean> {
     return new Promise((resolve, reject) => {
-      fetch(processURLAddress(config.klaviyo.endpoint.subscribe) + '?email=' + encodeURIComponent(email) + '&storeCode=' + config.defaultStoreCode, {
+      fetch(processURLAddress(config.klaviyo.endpoints.subscribe) + '?email=' + encodeURIComponent(email) + '&storeCode=' + config.defaultStoreCode, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -151,7 +168,7 @@ export const actions: ActionTree<KlaviyoState, any> = {
   subscribe ({ commit, dispatch, state }, email): Promise<Response> {
     if (!state.isSubscribed) {
       return new Promise((resolve, reject) => {
-        fetch(processURLAddress(config.klaviyo.endpoint.subscribe), {
+        fetch(processURLAddress(config.klaviyo.endpoints.subscribe), {
           method: 'POST',
           headers: {
             'Accept': 'application/json',
@@ -178,7 +195,7 @@ export const actions: ActionTree<KlaviyoState, any> = {
 
   subscribeAdvanced ({ commit, dispatch, state }, requestData) : Promise<Response> {
     return new Promise((resolve, reject) => {
-      fetch(processURLAddress(config.klaviyo.endpoint.subscribeAdvanced), {
+      fetch(processURLAddress(config.klaviyo.endpoints.subscribeAdvanced), {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -201,7 +218,7 @@ export const actions: ActionTree<KlaviyoState, any> = {
   unsubscribe ({ commit, state }, email): Promise<Response> {
     if (state.isSubscribed) {
       return new Promise((resolve, reject) => {
-        fetch(processURLAddress(config.klaviyo.endpoint.subscribe), {
+        fetch(processURLAddress(config.klaviyo.endpoints.subscribe), {
           method: 'DELETE',
           headers: {
             'Accept': 'application/json',
@@ -228,16 +245,19 @@ export const actions: ActionTree<KlaviyoState, any> = {
     if (!getters.isWatching(product.sku)) {
       let formData = new FormData()
 
-      formData.append('a', config.klaviyo.public_key)
+      let cfg = getAccountConfig(config.defaultStoreCode);
+      let listId = getList(cfg, 'back_in_stock');
+
+      formData.append('a', cfg.public_key)
       formData.append('email', email)
-      formData.append('g', config.klaviyo.listId)
+      formData.append('g', listId)
       formData.append('variant', product.sku)
       formData.append('product', product.parentSku ? product.parentSku : product.sku)
       formData.append('platform', config.klaviyo.platform)
       formData.append('subscribe_for_newsletter', subscribeForNewsletter)
 
       return new Promise((resolve, reject) => {
-        fetch(processURLAddress(config.klaviyo.endpoint.backInStock), {
+        fetch(processURLAddress(config.klaviyo.endpoints.backInStock), {
           method: 'POST',
           headers: {
             'Accept': 'application/json',
@@ -266,16 +286,19 @@ export const actions: ActionTree<KlaviyoState, any> = {
     if (getters.isWatching(product.sku)) {
       let formData = new FormData()
 
-      formData.append('a', config.klaviyo.public_key)
+      let cfg = getAccountConfig(config.defaultStoreCode);
+      let listId = getList(cfg, 'back_in_stock');
+
+      formData.append('a', cfg.public_key)
       formData.append('email', email)
-      formData.append('g', config.klaviyo.listId)
+      formData.append('g', listId)
       formData.append('variant', product.sku)
       formData.append('product', product.parentSku ? product.parentSku : product.sku)
       formData.append('platform', config.klaviyo.platform)
       formData.append('subscribe_for_newsletter', subscribeForNewsletter)
 
       return new Promise((resolve, reject) => {
-        fetch(processURLAddress(config.klaviyo.endpoint.subscribe), {
+        fetch(processURLAddress(config.klaviyo.endpoints.subscribe), {
           method: 'DELETE',
           headers: {
             'Accept': 'application/json',

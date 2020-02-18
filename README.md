@@ -40,23 +40,39 @@ Add following settings to your config file. If you want to use different lists f
 ```
 
 ```json
-  "klaviyo": {
-    "public_key": "__YOUR_PUBLIC_KEY__",
-    "endpoint": {
-      "api": "https://a.klaviyo.com/api",
-      "subscribe": "http://localhost:8080/api/ext/klaviyo/subscribe",
-      "subscribeAdvanced": "http://localhost:8080/api/ext/klaviyo/subscribe-advanced",
-      "backInStock": "https://a.klaviyo.com/onsite/components/back-in-stock/subscribe"
-    },
-    "listId": "__NEWSLETTER_LIST_ID__",
-    "multistoreListIds": {
-      "es": "__ES_LIST_ID__",
-      "eu": "__EU_LIST_ID__",
-      "it": "__IT_LIST_ID__",
-      ...
-    },
-    "platform": "magento_two"
-  },
+{
+    "klaviyo": {
+        "endpoints": {
+          "api": "https://a.klaviyo.com/api",
+          "subscribe": "http://localhost:8080/api/ext/klaviyo/subscribe",
+          "subscribeAdvanced": "http://localhost:8080/api/ext/klaviyo/subscribe-advanced",
+          "backInStock": "https://a.klaviyo.com/onsite/components/back-in-stock/subscribe"
+        },
+        "accounts": {
+          "__EN_STORE_CODE": {
+              "public_key": "__YOUR_EN_PUBLIC_KEY__",
+              "lists": {
+                 "default": "__DEFAULT_EN_LIST_ID__",
+                 "back_in_stock": "__CUSTOM_EN_LIST_ID__",
+                 "_CUSTOM_LIST_KEY": "__CUSTOM_EN_LIST_ID__"
+              }
+          },
+          "__ES_STORE_CODE": {
+              "public_key": "__YOUR_ES_PUBLIC_KEY__",
+              "lists": {
+                 "default": "__DEFAULT_ES_LIST_ID__",
+                 "back_in_stock": "__CUSTOM_ES_LIST_ID__",
+                 "_CUSTOM_LIST_KEY": "__CUSTOM_ES_LIST_ID__"
+              }
+           }
+        },
+        "back_in_stock": {
+            "__EN_STORE_CODE": "__CUSTOM_EN_LIST_ID__",
+            "__ES_STORE_CODE": "__CUSTOM_EN_LIST_ID__"
+        },
+        "platform": "magento_two"
+    }
+}
 ```
 
 Add Subscribe/Unsubscripe components as mixins
@@ -96,17 +112,27 @@ cp -f ./vue-storefront/src/modules/vsf-klaviyo/API/klaviyo ./vue-storefront-api/
 Add the config to your api config. If you want to use different lists for multistore you need to add all list ids to **multistoreListIds**.
 
 ```json
-  "extensions":{
+  "extensions": {
     "klaviyo": {
-      "apiKey": "__YOUR_PRIVATE_KEY__",
-      "apiUrl": "https://a.klaviyo.com/api",
-      "listId": "__NEWSLETTER_LIST_ID__",
-      "multistoreListIds": {
-        "es": "__ES_LIST_ID__",
-        "eu": "__EU_LIST_ID__",
-        "it": "__IT_LIST_ID__",
-        ...
-      }
+        "endpoints": {
+          "api": "https://a.klaviyo.com/api",
+        },
+        "accounts": {
+          "__EN_STORE_CODE": {
+              "private_key": "__YOUR_EN_PRIVATE_KEY__",
+              "lists": {
+                 "default": "__DEFAULT_EN_LIST_ID__",
+                 "_CUSTOM_LIST_KEY": "__CUSTOM_EN_LIST_ID__"
+              }
+          },
+          "__ES_STORE_CODE": {
+              "private_key": "__YOUR_ES_PRIVATE_KEY__",
+              "lists": {
+                 "default": "__DEFAULT_ES_LIST_ID__",
+                 "_CUSTOM_LIST_KEY": "__CUSTOM_ES_LIST_ID__"
+              }
+           }
+        },
     },
     ...
   },
