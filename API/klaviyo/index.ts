@@ -162,11 +162,7 @@ export default ({config, db}) => {
             },
             json: true,
             body: {
-                profiles: [
-                    {
-                        email: data.email
-                    }
-                ]
+                emails: data.emails
             }
         }, (error, response, body) => {
             if (error) {

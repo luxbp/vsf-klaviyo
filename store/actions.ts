@@ -49,8 +49,10 @@ export const actions: ActionTree<KlaviyoState, any> = {
       throw new Error('User details are required')
     }
 
+    let cfg = getAccountConfig(config.defaultStoreCode);
+
     let request = {
-      token: config.klaviyo.public_key,
+      token: cfg.public_key,
       properties: Object.assign(customer, additionalData)
     }
     let url = processURLAddress(config.klaviyo.endpoints.api) + '/identify?data=' + encode(request)
