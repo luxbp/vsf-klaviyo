@@ -50,7 +50,7 @@ module.exports = ({ config, db }) => {
         }
 
         for (let email in data.emails) {
-            if (!email) {
+            if (!data.emails[email]) {
                 apiStatus(res, 'Email must be provided.', 422);
                 return;
             }
@@ -98,7 +98,7 @@ module.exports = ({ config, db }) => {
         }
 
         for (let profile in data.profiles) {
-            if (!profile.email) {
+            if (!data.profiles[profile].email) {
                 apiStatus(res, 'Email must be provided.', 422);
                 return;
             }
@@ -148,7 +148,7 @@ module.exports = ({ config, db }) => {
         }
 
         for (let email in data.emails) {
-            if (!email) {
+            if (!data.emails[email]) {
                 apiStatus(res, 'Email must be provided.', 422);
                 return;
             }
