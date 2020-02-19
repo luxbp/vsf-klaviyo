@@ -14,7 +14,7 @@ const encode = (json) => {
 }
 
 const getAccountConfig = (storeCode = null) => {
-  let cfg = config.extensions.klaviyo.accounts;
+  let cfg = config.klaviyo.accounts;
 
   if (storeCode) {
     return cfg[storeCode];
