@@ -2,7 +2,7 @@ import { apiStatus } from '../../../lib/util'
 import { Router } from 'express'
 import * as request from "request";
 
-export default ({config, db}) => {
+module.exports = ({ config, db }) => {
     let app = Router();
 
     const getAccountConfig = (storeCode = null) => {
