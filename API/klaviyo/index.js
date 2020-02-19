@@ -1,5 +1,5 @@
-import {apiStatus} from '../../../lib/util'
-import {Router} from 'express'
+import { apiStatus } from '../../../lib/util'
+import { Router } from 'express'
 import * as request from "request";
 
 export default ({config, db}) => {
