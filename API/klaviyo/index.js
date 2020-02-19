@@ -1,9 +1,9 @@
 import { apiStatus } from '../../../lib/util'
 import { Router } from 'express'
-import * as request from "request";
 
 module.exports = ({ config, db }) => {
     let app = Router();
+    let request = require('request')
 
     const getAccountConfig = (storeCode = null) => {
         let cfg = config.extensions.klaviyo.accounts;
