@@ -13,21 +13,6 @@ const encode = (json) => {
   return Base64.encode(JSON.stringify(json)) // ERROR: Failed to execute 'btoa' on 'Window': The string to be encoded contains characters outside of the Latin1 range.
 }
 
-const getAccountConfig = (storeCode = null) => {
-  let cfg = config.klaviyo.accounts;
-
-  if (storeCode) {
-    return cfg[storeCode];
-  }
-
-  // return first result
-  return cfg[Object.keys(cfg)[0]];
-};
-
-const getList = (cfg, listKey = 'default') => {
-  return cfg.lists[listKey] || cfg.lists.default;
-};
-
 // it's a good practice for all actions to return Promises with effect of their execution
 export const actions: ActionTree<KlaviyoState, any> = {
   maybeIdentify ({ state, dispatch }, { user = null, personalDetails = null, useCache = true }): Promise<Response | object> {
@@ -49,10 +34,8 @@ export const actions: ActionTree<KlaviyoState, any> = {
       throw new Error('User details are required')
     }
 
-    let cfg = getAccountConfig(config.defaultStoreCode);
-
     let request = {
-      token: cfg.public_key,
+      token: config.klaviyo.public_key,
       properties: Object.assign(customer, additionalData)
     }
     let url = processURLAddress(config.klaviyo.endpoints.api) + '/identify?data=' + encode(request)
@@ -102,8 +85,6 @@ export const actions: ActionTree<KlaviyoState, any> = {
   },
 
   track ({ state }, { event, data, time = Math.floor(Date.now() / 1000) }): Promise<Response> {
-    let cfg = getAccountConfig(config.defaultStoreCode);
-
     if (state.customer === null || !onlineHelper.isOnline) {
       return new Promise((resolve, reject) => {
         if (state.customer === null) {
@@ -123,7 +104,7 @@ export const actions: ActionTree<KlaviyoState, any> = {
     }
 
     let request = {
-      token: cfg.public_key,
+      token: config.klaviyo.public_key,
       event: event,
       customer_properties: state.customer,
       properties: data,
@@ -247,12 +228,9 @@ export const actions: ActionTree<KlaviyoState, any> = {
     if (!getters.isWatching(product.sku)) {
       let formData = new FormData()
 
-      let cfg = getAccountConfig(config.defaultStoreCode);
-      let listId = getList(cfg, 'back_in_stock');
-
-      formData.append('a', cfg.public_key)
+      formData.append('a', config.klaviyo.public_key)
       formData.append('email', email)
-      formData.append('g', listId)
+      formData.append('g', config.klaviyo.back_in_stock_list)
       formData.append('variant', product.sku)
       formData.append('product', product.parentSku ? product.parentSku : product.sku)
       formData.append('platform', config.klaviyo.platform)
@@ -288,12 +266,9 @@ export const actions: ActionTree<KlaviyoState, any> = {
     if (getters.isWatching(product.sku)) {
       let formData = new FormData()
 
-      let cfg = getAccountConfig(config.defaultStoreCode);
-      let listId = getList(cfg, 'back_in_stock');
-
-      formData.append('a', cfg.public_key)
+      formData.append('a', config.klaviyo.public_key)
       formData.append('email', email)
-      formData.append('g', listId)
+      formData.append('g', config.klaviyo.back_in_stock_list)
       formData.append('variant', product.sku)
       formData.append('product', product.parentSku ? product.parentSku : product.sku)
       formData.append('platform', config.klaviyo.platform)
