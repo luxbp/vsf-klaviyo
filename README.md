@@ -48,28 +48,8 @@ Add following settings to your config file. If you want to use different lists f
           "subscribeAdvanced": "http://localhost:8080/api/ext/klaviyo/subscribe-advanced",
           "backInStock": "https://a.klaviyo.com/onsite/components/back-in-stock/subscribe"
         },
-        "accounts": {
-          "__EN_STORE_CODE": {
-              "public_key": "__YOUR_EN_PUBLIC_KEY__",
-              "lists": {
-                 "default": "__DEFAULT_EN_LIST_ID__",
-                 "back_in_stock": "__CUSTOM_EN_LIST_ID__",
-                 "_CUSTOM_LIST_KEY": "__CUSTOM_EN_LIST_ID__"
-              }
-          },
-          "__ES_STORE_CODE": {
-              "public_key": "__YOUR_ES_PUBLIC_KEY__",
-              "lists": {
-                 "default": "__DEFAULT_ES_LIST_ID__",
-                 "back_in_stock": "__CUSTOM_ES_LIST_ID__",
-                 "_CUSTOM_LIST_KEY": "__CUSTOM_ES_LIST_ID__"
-              }
-           }
-        },
-        "back_in_stock": {
-            "__EN_STORE_CODE": "__CUSTOM_EN_LIST_ID__",
-            "__ES_STORE_CODE": "__CUSTOM_EN_LIST_ID__"
-        },
+        "public_key": "XXXXXX",
+        "back_in_stock_list": "XXXXXXX",
         "platform": "magento_two"
     }
 }
