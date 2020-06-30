@@ -239,10 +239,6 @@ export const actions: ActionTree<KlaviyoState, any> = {
       return new Promise((resolve, reject) => {
         fetch(processURLAddress(config.klaviyo.endpoints.backInStock), {
           method: 'POST',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
           mode: 'cors',
           body: formData
         }).then(res => {
@@ -277,10 +273,6 @@ export const actions: ActionTree<KlaviyoState, any> = {
       return new Promise((resolve, reject) => {
         fetch(processURLAddress(config.klaviyo.endpoints.subscribe), {
           method: 'DELETE',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
           mode: 'cors',
           body: formData
         }).then(res => {
