@@ -232,11 +232,11 @@ export const actions: ActionTree<KlaviyoState, any> = {
 
       formData.append('a', config.klaviyo.public_key)
       formData.append('email', email)
-      formData.append('g', config.klaviyo.back_in_stock_list)
+      formData.append('g', config.klaviyo.backInStockListId)
       formData.append('variant', product.sku)
       formData.append('product', product.parentSku ? product.parentSku : product.sku)
       formData.append('platform', config.klaviyo.platform)
-      formData.append('subscribe_for_newsletter', subscribeForNewsletter)
+      formData.append('subscribe_for_newsletter', !!config.klaviyo.backInStockListId)
       formData.append('store', storeId || config.defaultStoreId)
 
       return new Promise((resolve, reject) => {
