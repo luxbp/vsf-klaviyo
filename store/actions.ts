@@ -236,7 +236,7 @@ export const actions: ActionTree<KlaviyoState, any> = {
       formData.append('variant', product.sku)
       formData.append('product', product.parentSku ? product.parentSku : product.sku)
       formData.append('platform', config.klaviyo.platform)
-      formData.append('subscribe_for_newsletter', !!config.klaviyo.backInStockListId)
+      formData.append('subscribe_for_newsletter', (!!config.klaviyo.backInStockListId).toString())
       formData.append('store', storeId || config.defaultStoreId)
 
       return new Promise((resolve, reject) => {
