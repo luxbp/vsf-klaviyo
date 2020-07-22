@@ -8,6 +8,7 @@ import * as mappers from '../helpers/mappers'
 import { cacheStorage } from '../'
 import { processURLAddress, onlineHelper } from '@vue-storefront/core/helpers'
 import { Base64 } from '../helpers/webtoolkit.base64.js'
+import { currentStoreView } from '@vue-storefront/core/lib/multistore'
 
 const encode = (json) => {
   return Base64.encode(JSON.stringify(json)) // ERROR: Failed to execute 'btoa' on 'Window': The string to be encoded contains characters outside of the Latin1 range.
@@ -227,6 +228,7 @@ export const actions: ActionTree<KlaviyoState, any> = {
   backInStockSubscribe ({ state, commit, getters }, { product, email, subscribeForNewsletter, useCache = true }): Promise<Response> {
     if (!getters.isWatching(product.sku)) {
       let formData = new FormData()
+      const { storeId } = currentStoreView()
 
       formData.append('a', config.klaviyo.public_key)
       formData.append('email', email)
@@ -235,6 +237,7 @@ export const actions: ActionTree<KlaviyoState, any> = {
       formData.append('product', product.parentSku ? product.parentSku : product.sku)
       formData.append('platform', config.klaviyo.platform)
       formData.append('subscribe_for_newsletter', subscribeForNewsletter)
+      formData.append('store', storeId || config.defaultStoreId)
 
       return new Promise((resolve, reject) => {
         fetch(processURLAddress(config.klaviyo.endpoints.backInStock), {
