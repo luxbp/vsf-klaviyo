@@ -4,7 +4,8 @@ export default {
   name: 'KlaviyoSubscribe',
   data () {
     return {
-      email: ''
+      email: '',
+      phoneNumber: ''
     }
   },
   validations: {
@@ -14,10 +15,10 @@ export default {
     }
   },
   methods: {
-    subscribe (success?: Function, failure?: Function) {
+    subscribe (RequestData?: Object, success?: Function, failure?: Function) {
       // argument omitted for validation purposes
       if (!this.$v.$invalid) {
-        this.$store.dispatch('klaviyo/subscribe', this.email).then(res => {
+        this.$store.dispatch('klaviyo/subscribe', RequestData).then(res => {
           if (success) success(res)
         }).catch(err => {
           if (failure) failure(err)
