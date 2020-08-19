@@ -1,7 +1,7 @@
-import {apiStatus} from '../../../lib/util'
-import {Router} from 'express'
+import { apiStatus } from '../../../lib/util'
+import { Router } from 'express'
 
-module.exports = ({config, db}) => {
+module.exports = ({ config, db }) => {
     let app = Router();
     let request = require('request')
 
