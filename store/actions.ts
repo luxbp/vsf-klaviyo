@@ -186,7 +186,10 @@ export const actions: ActionTree<KlaviyoState, any> = {
           'Content-Type': 'application/json'
         },
         mode: 'cors',
-        body: JSON.stringify(requestData)
+        body: JSON.stringify({
+          ...requestData,
+          storeCode: config.defaultStoreCode
+        })
       }).then(res => {
         if (!state.customer && requestData.hasOwnProperty('email')) {
           dispatch('identify', { user: requestData }).then((identify) => resolve(identify))
