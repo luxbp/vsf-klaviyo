@@ -1,5 +1,6 @@
 import { apiStatus } from '../../../lib/util'
 import { Router } from 'express'
+import { parsePhoneNumberFromString } from 'libphonenumber-js'
 
 module.exports = ({ config, db }) => {
     let app = Router();
@@ -14,6 +15,14 @@ module.exports = ({ config, db }) => {
 
         // return first result
         return cfg[Object.keys(cfg)[0]];
+    };
+
+    const formatPhoneNumber = (number, country = 'US') => {
+        if (!number) {
+            return '';
+        }
+        const phoneNumber = parsePhoneNumberFromString(number, country);
+        return phoneNumber && phoneNumber.isValid() ? phoneNumber.number : '';
     };
 
     const getListId = (listKey, storeCode = null, cfg = null) => {
@@ -144,7 +153,7 @@ module.exports = ({ config, db }) => {
         if (!Array.isArray(data.profiles)) {
             data.profiles = data.phoneNumber ? [{
                 email: data.email,
-                phone_number: data.phoneNumber,
+                phone_number: formatPhoneNumber(data.phoneNumber),
                 sms_consent: true
             }] : [{ email: data.email }];
         }
