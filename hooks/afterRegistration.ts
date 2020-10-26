@@ -16,7 +16,7 @@ export async function afterRegistration({ Vue, config, store, isServer }) {
     })
 
     Vue.prototype.$bus.$on('checkout-after-personalDetails', receivedData => {
-      if (!store.state.klaviyo.customer && receivedData.hasOwnProperty('email')) {
+      if (!store.state.klaviyo.customer && receivedData && receivedData.hasOwnProperty('email')) {
         store.dispatch('klaviyo/identify', { personalDetails: receivedData })
       }
     })
@@ -34,7 +34,7 @@ export async function afterRegistration({ Vue, config, store, isServer }) {
     })
 
     Vue.prototype.$bus.$on('cart-before-delete', event => {
-      let beforeDelete = event.items
+      let beforeDelete = event.items || {}
       Vue.prototype.$bus.$on('cart-after-delete', event => {
         let deleted = beforeDelete.filter(x => !event.items.includes(x))
 

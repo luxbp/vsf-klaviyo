@@ -191,7 +191,7 @@ export const actions: ActionTree<KlaviyoState, any> = {
           storeCode: config.defaultStoreCode
         })
       }).then(res => {
-        if (!state.customer && requestData.hasOwnProperty('email')) {
+        if (!state.customer && requestData && requestData.hasOwnProperty('email')) {
           dispatch('identify', { user: requestData }).then((identify) => resolve(identify))
         } else {
           resolve(res)

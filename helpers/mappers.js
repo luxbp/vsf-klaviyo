@@ -35,6 +35,7 @@ export const mapCustomer = (user) => {
 }
 
 export const mapProduct = (product) => {
+  product = product || {}
   let route = formatProductLink(product, rootStore.state.storeView.storeCode)
   let link = router.resolve(route)
   let categories = []
